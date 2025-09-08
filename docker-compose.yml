@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: devprep-backend
+    ports:
+      - "9001:9001"
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - SECRET_KEY=your-secret-key-change-in-production
+      - ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=30
+    volumes:
+      - ./backend:/app
+      - ./backend/data:/app/data
+    networks:
+      - devprep-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: devprep-frontend
+    ports:
+      - "9000:9000"
+    depends_on:
+      - backend
+    networks:
+      - devprep-network
+    restart: unless-stopped
+
+networks:
+  devprep-network:
+    driver: bridge
+
+volumes:
+  backend-data:
+    driver: local
