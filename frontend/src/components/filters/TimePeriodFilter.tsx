@@ -28,13 +28,13 @@ export const TimePeriodFilter: React.FC<TimePeriodFilterProps> = ({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
           Time Period
         </label>
         {selectedTimePeriods.length > 0 && (
           <button
             onClick={clearSelection}
-            className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
+            className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 flex items-center gap-1 transition-colors"
           >
             <X size={12} />
             Clear
@@ -49,9 +49,9 @@ export const TimePeriodFilter: React.FC<TimePeriodFilterProps> = ({
               type="checkbox"
               checked={selectedTimePeriods.includes(timePeriod)}
               onChange={() => handleToggle(timePeriod)}
-              className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+              className="rounded border-gray-300 dark:border-gray-600 text-indigo-600 dark:text-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-400 bg-white dark:bg-gray-700"
             />
-            <span className="text-sm text-gray-700">
+            <span className="text-sm text-gray-700 dark:text-gray-300">
               {TIME_PERIOD_LABELS[timePeriod] || timePeriod}
             </span>
           </label>
@@ -59,7 +59,7 @@ export const TimePeriodFilter: React.FC<TimePeriodFilterProps> = ({
       </div>
       
       {selectedTimePeriods.length > 0 && (
-        <div className="text-xs text-gray-500">
+        <div className="text-xs text-gray-500 dark:text-gray-400">
           {selectedTimePeriods.length} time period{selectedTimePeriods.length !== 1 ? 's' : ''} selected
         </div>
       )}

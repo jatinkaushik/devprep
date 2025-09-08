@@ -152,7 +152,7 @@ export const QuestionsPage: React.FC = () => {
       {/* Compact Single-Row Header */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
         <div className="w-full max-w-[98%] sm:max-w-[95%] lg:max-w-[90%] xl:max-w-[85%] mx-auto px-1 sm:px-2 lg:px-3 xl:px-4">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between py-3 gap-3">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between py-2 gap-2">
             {/* Left: Stats */}
             <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-gray-600 dark:text-gray-300">
               {stats && (
@@ -342,32 +342,32 @@ export const QuestionsPage: React.FC = () => {
                 {/* Time Period Logic AND/OR */}
                 {filters.time_periods.length > 1 && (
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Time Period Filter Logic
                     </label>
                     <div className="flex gap-2">
                       <button
                         onClick={() => setTimePeriodLogic('OR')}
-                        className={`px-3 py-1 text-xs rounded ${
+                        className={`px-3 py-1 text-xs rounded transition-colors ${
                           timePeriodLogic === 'OR'
-                            ? 'bg-blue-500 text-white'
-                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            ? 'bg-indigo-500 dark:bg-indigo-600 text-white'
+                            : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
                         }`}
                       >
                         OR (Any)
                       </button>
                       <button
                         onClick={() => setTimePeriodLogic('AND')}
-                        className={`px-3 py-1 text-xs rounded ${
+                        className={`px-3 py-1 text-xs rounded transition-colors ${
                           timePeriodLogic === 'AND'
-                            ? 'bg-blue-500 text-white'
-                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            ? 'bg-indigo-500 dark:bg-indigo-600 text-white'
+                            : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
                         }`}
                       >
                         AND (All)
                       </button>
                     </div>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       {timePeriodLogic === 'OR' 
                         ? 'Show questions from any of the selected time periods'
                         : 'Show only questions that appeared in all selected time periods'

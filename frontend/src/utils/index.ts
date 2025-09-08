@@ -31,13 +31,13 @@ export function getDifficultyColor(difficulty: string): string {
 export function getDifficultyBadgeClass(difficulty: string): string {
   switch (difficulty.toUpperCase()) {
     case 'EASY':
-      return 'bg-green-100 text-green-800';
+      return 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-700';
     case 'MEDIUM':
-      return 'bg-yellow-100 text-yellow-800';
+      return 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-700';
     case 'HARD':
-      return 'bg-red-100 text-red-800';
+      return 'bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-700';
     default:
-      return 'bg-gray-100 text-gray-800';
+      return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-600';
   }
 }
 

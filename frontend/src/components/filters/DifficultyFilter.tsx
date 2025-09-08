@@ -28,13 +28,13 @@ export const DifficultyFilter: React.FC<DifficultyFilterProps> = ({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
           Difficulty
         </label>
         {selectedDifficulties.length > 0 && (
           <button
             onClick={clearSelection}
-            className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
+            className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 flex items-center gap-1 transition-colors"
           >
             <X size={12} />
             Clear
@@ -50,7 +50,7 @@ export const DifficultyFilter: React.FC<DifficultyFilterProps> = ({
             className={`px-3 py-1 rounded-full text-sm font-medium transition-all ${
               selectedDifficulties.includes(difficulty)
                 ? getDifficultyBadgeClass(difficulty)
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
           >
             {difficulty}
@@ -59,7 +59,7 @@ export const DifficultyFilter: React.FC<DifficultyFilterProps> = ({
       </div>
       
       {selectedDifficulties.length > 0 && (
-        <div className="text-xs text-gray-500">
+        <div className="text-xs text-gray-500 dark:text-gray-400">
           {selectedDifficulties.length} difficulty level{selectedDifficulties.length !== 1 ? 's' : ''} selected
         </div>
       )}
