@@ -36,11 +36,25 @@ class QuestionBase(BaseModel):
     acceptance_rate: Optional[float] = None
     link: str
     topics: Optional[str] = None
+    description: Optional[str] = None
+    added_by: int
+    is_approved: bool = True
+    is_public: bool = False
 
 
 class Question(QuestionBase):
     """Question model for API responses"""
     pass
+
+
+class QuestionCreate(BaseModel):
+    """Question creation model"""
+    title: str
+    difficulty: str
+    link: str
+    topics: Optional[List[str]] = None
+    description: Optional[str] = None
+    is_public: bool = False
 
 
 class CompanyBase(BaseModel):

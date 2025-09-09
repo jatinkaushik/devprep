@@ -9,24 +9,28 @@ import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { TestPage } from './pages/TestPage';
 import { LandingPage } from './pages/LandingPage';
+import { UserQuestionsPage } from './pages/UserQuestionsPage';
+import { CreateQuestionPage } from './pages/CreateQuestionPage';
+import { AdminDashboardPage } from './pages/AdminDashboardPage';
 import { Navbar } from './components/Navbar';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { AdminRoute } from './components/AdminRoute';
 
 const AppContent: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { token, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { token, isAuthenticated, user } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    // Try to get current user if token exists
-    if (token && !isAuthenticated) {
+    // Try to get current user if token exists but user data is not loaded
+    if (token && !user) {
       dispatch(getCurrentUser());
     }
-  }, [dispatch, token, isAuthenticated]);
+  }, [dispatch, token, user]);
 
   return (
-    <div className="App h-screen bg-gray-50 dark:bg-gray-900 transition-colors overflow-hidden flex flex-col">
+    <div className="App min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       <Navbar />
-      <div className="flex-1 min-h-0">
+      <main>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
@@ -40,13 +44,45 @@ const AppContent: React.FC = () => {
             }
           />
           <Route
+            path="/questions/user"
+            element={
+              <ProtectedRoute>
+                <UserQuestionsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/questions/create"
+            element={
+              <ProtectedRoute>
+                <CreateQuestionPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/questions/edit/:id"
+            element={
+              <ProtectedRoute>
+                <CreateQuestionPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminDashboardPage />
+              </AdminRoute>
+            }
+          />
+          <Route
             path="/"
             element={
               isAuthenticated ? <Navigate to="/questions" replace /> : <LandingPage />
             }
           />
         </Routes>
-      </div>
+      </main>
     </div>
   );
 };

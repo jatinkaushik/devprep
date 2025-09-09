@@ -4,6 +4,7 @@ User authentication schemas
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime
+from app.models.user_models import UserRole
 
 
 class UserBase(BaseModel):
@@ -30,6 +31,7 @@ class UserUpdate(BaseModel):
 class UserResponse(UserBase):
     """User response model"""
     id: int
+    role: UserRole
     created_at: datetime
     
     class Config:
@@ -38,7 +40,7 @@ class UserResponse(UserBase):
 
 class LoginRequest(BaseModel):
     """Login request model"""
-    email: EmailStr
+    username: str  # Changed from email to username to match frontend
     password: str
 
 
@@ -46,6 +48,7 @@ class LoginResponse(BaseModel):
     """Login response model"""
     access_token: str
     token_type: str = "bearer"
+    user: Optional[UserResponse] = None
     user: UserResponse
 
 

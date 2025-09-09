@@ -148,9 +148,9 @@ export const QuestionsPage: React.FC = () => {
   const stats = questionsData?.stats;
 
   return (
-    <div className="h-full bg-gray-50 dark:bg-gray-900 flex flex-col overflow-hidden">
+    <div className="bg-gray-50 dark:bg-gray-900 min-h-screen">
       {/* Compact Single-Row Header */}
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="w-full max-w-[98%] sm:max-w-[95%] lg:max-w-[90%] xl:max-w-[85%] mx-auto px-1 sm:px-2 lg:px-3 xl:px-4">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between py-2 gap-2">
             {/* Left: Stats */}
@@ -245,29 +245,28 @@ export const QuestionsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Fixed Height Container with Scrollable Inner Components */}
-      <div className="w-full max-w-[98%] sm:max-w-[95%] lg:max-w-[90%] xl:max-w-[85%] mx-auto px-1 sm:px-2 lg:px-3 xl:px-4 flex-1 min-h-0">
-        <div className="flex flex-col lg:flex-row gap-3 lg:gap-4 h-full py-3 lg:py-4">
+      {/* Main Content Area */}
+      <div className="w-full max-w-[98%] sm:max-w-[95%] lg:max-w-[90%] xl:max-w-[85%] mx-auto px-1 sm:px-2 lg:px-3 xl:px-4 py-3 lg:py-4">
+        <div className="flex flex-col lg:flex-row gap-3 lg:gap-4">
           {/* Enhanced Filters Sidebar */}
           {showFilters && (
-            <div className="w-full lg:w-72 lg:flex-shrink-0 h-full lg:h-auto">
-              <div className="h-full">
-                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm h-full flex flex-col">
-                  {/* Filters Header - Fixed */}
-                  <div className="flex items-center justify-between p-4 pb-3 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
-                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Filters</h2>
-                    {hasActiveFilters && (
-                      <button
-                        onClick={clearAllFilters}
-                        className="px-3 py-1.5 text-sm text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
-                      >
-                        Clear All
-                      </button>
-                    )}
-                  </div>
+            <div className="w-full lg:w-72 lg:flex-shrink-0">
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm">
+                {/* Filters Header */}
+                <div className="flex items-center justify-between p-4 pb-3 border-b border-gray-200 dark:border-gray-700">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Filters</h2>
+                  {hasActiveFilters && (
+                    <button
+                      onClick={clearAllFilters}
+                      className="px-3 py-1.5 text-sm text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
+                    >
+                      Clear All
+                    </button>
+                  )}
+                </div>
 
-                  {/* Filters Content - Scrollable */}
-                  <div className="p-4 space-y-4 overflow-y-auto flex-1 overscroll-contain">
+                {/* Filters Content */}
+                <div className="p-4 space-y-4">
                     {/* Search Filter */}
                     <div className="space-y-3">
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Search</label>
@@ -383,13 +382,12 @@ export const QuestionsPage: React.FC = () => {
                     />
                   </div>
                 </div>
-              </div>
             </div>
           )}
 
-          {/* Main Content - Scrollable */}
-          <div className={`${showFilters ? 'flex-1' : 'w-full'} min-w-0 h-full`}>
-            <div className="h-full overflow-y-auto overscroll-contain pr-2">
+          {/* Main Content */}
+          <div className={`${showFilters ? 'flex-1' : 'w-full'} min-w-0`}>
+            <div className="pr-2">
               {/* Loading State */}
               {isLoading && (
                 <div className="flex justify-center items-center py-12">

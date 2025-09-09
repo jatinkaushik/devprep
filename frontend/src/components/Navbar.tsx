@@ -55,6 +55,26 @@ export const Navbar: React.FC = () => {
                 >
                   Questions
                 </Link>
+                <Link
+                  to="/questions/user"
+                  className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
+                  My Questions
+                </Link>
+                <Link
+                  to="/questions/create"
+                  className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
+                  Add Question
+                </Link>
+                {user?.role === 'admin' && (
+                  <Link
+                    to="/admin"
+                    className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                  >
+                    Admin
+                  </Link>
+                )}
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300">
                     <User size={16} />
@@ -132,6 +152,32 @@ export const Navbar: React.FC = () => {
                 >
                   Questions
                 </Link>
+                
+                <Link
+                  to="/questions/user"
+                  onClick={closeMobileMenu}
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                >
+                  My Questions
+                </Link>
+                
+                <Link
+                  to="/questions/create"
+                  onClick={closeMobileMenu}
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                >
+                  Add Question
+                </Link>
+                
+                {user?.role === 'admin' && (
+                  <Link
+                    to="/admin"
+                    onClick={closeMobileMenu}
+                    className="block px-3 py-2 rounded-md text-base font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
+                  >
+                    Admin Dashboard
+                  </Link>
+                )}
                 
                 <button
                   onClick={handleLogout}

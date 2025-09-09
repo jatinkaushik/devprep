@@ -6,12 +6,13 @@ export interface User {
   email: string;
   username: string;
   full_name?: string;
+  role: 'user' | 'admin';
   is_active: boolean;
   created_at: string;
 }
 
 export interface LoginCredentials {
-  email: string;
+  username: string;  // Changed from email to username
   password: string;
 }
 
@@ -146,6 +147,7 @@ const authSlice = createSlice({
         state.user = action.payload.user;
         state.token = action.payload.access_token;
         state.isAuthenticated = true;
+        localStorage.setItem('token', action.payload.access_token);
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;

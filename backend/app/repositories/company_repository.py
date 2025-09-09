@@ -22,3 +22,8 @@ class CompanyRepository(BaseRepository):
         """Find company by name"""
         query = "SELECT id, name FROM companies WHERE name = ?"
         return self.execute_query_one(query, (name,))
+    
+    def get_all_companies(self) -> List[dict]:
+        """Get all companies as list of dictionaries"""
+        companies = self.find_all()
+        return [{'id': company[0], 'name': company[1]} for company in companies]

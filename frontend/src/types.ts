@@ -7,6 +7,138 @@ export interface Question {
   topics?: string;
 }
 
+// Type aliases
+export type QuestionDifficulty = 'Easy' | 'Medium' | 'Hard';
+
+// User Management Types
+export interface User {
+  id: number;
+  email: string;
+  username: string;
+  full_name?: string;
+  role: 'user' | 'admin';
+  is_active: boolean;
+  created_at: string;
+}
+
+// User Question Types
+export interface UserQuestion {
+  id: number;
+  title: string;
+  description?: string;
+  difficulty: QuestionDifficulty;
+  topics?: string[];
+  solution?: string;
+  link?: string;
+  is_public: boolean;
+  is_approved: boolean;
+  created_by: number;
+  creator_username?: string;
+  approved_by?: number;
+  approver_username?: string;
+  created_at: string;
+  updated_at: string;
+  approved_at?: string;
+  references?: QuestionReference[];
+  companies?: UserQuestionCompany[];
+  is_favorited?: boolean;
+}
+
+export interface UserQuestionCreate {
+  title: string;
+  description?: string;
+  difficulty: QuestionDifficulty;
+  topics?: string[];
+  solution?: string;
+  link?: string;
+  is_public?: boolean;
+  request_public?: boolean;  // For admin approval request
+}
+
+export interface UserQuestionUpdate {
+  title?: string;
+  description?: string;
+  difficulty?: 'Easy' | 'Medium' | 'Hard';
+  topics?: string[];
+  solution?: string;
+  link?: string;
+}
+
+// Question Reference Types
+export interface QuestionReference {
+  id: number;
+  url: string;
+  title?: string;
+  description?: string;
+  is_approved: boolean;
+  created_by: number;
+  creator_username?: string;
+  approved_by?: number;
+  approver_username?: string;
+  created_at: string;
+  approved_at?: string;
+}
+
+export interface QuestionReferenceCreate {
+  url: string;
+  title?: string;
+  description?: string;
+  question_id?: number;
+  user_question_id?: number;
+}
+
+// Company Association Types
+export interface UserQuestionCompany {
+  id: number;
+  company_id: number;
+  company_name?: string;
+  time_period: string;
+  frequency: number;
+  is_approved: boolean;
+  created_by: number;
+  creator_username?: string;
+  approved_by?: number;
+  approver_username?: string;
+  created_at: string;
+  approved_at?: string;
+}
+
+// Approval Request Types
+export interface ApprovalRequest {
+  id: number;
+  request_type: 'question_public' | 'reference' | 'company_association';
+  entity_id: number;
+  entity_type: string;
+  requested_by: number;
+  requester_username?: string;
+  status: 'pending' | 'approved' | 'rejected';
+  admin_notes?: string;
+  processed_by?: number;
+  processor_username?: string;
+  created_at: string;
+  processed_at?: string;
+  entity_details?: any;
+}
+
+// Response Types
+export interface UserQuestionListResponse {
+  questions: UserQuestion[];
+  total: number;
+  page: number;
+  per_page: number;
+  total_pages: number;
+}
+
+export interface AdminStats {
+  total_users: number;
+  total_user_questions: number;
+  pending_question_approvals: number;
+  pending_reference_approvals: number;
+  pending_company_associations: number;
+  questions_approved_today: number;
+  references_approved_today: number;
+}
+
 export interface Company {
   id: number;
   name: string;

@@ -45,12 +45,12 @@ class UserService(BaseService):
     
     def authenticate_user(self, login_data: LoginRequest) -> LoginResponse:
         """Authenticate user and return access token"""
-        # Find user by email
-        user = self.user_repo.find_by_email(login_data.email)
+        # Find user by username (changed from email)
+        user = self.user_repo.find_by_username(login_data.username)
         if not user:
             raise HTTPException(
                 status_code=401,
-                detail="Invalid email or password"
+                detail="Invalid username or password"
             )
         
         # Check if user is active
@@ -64,12 +64,12 @@ class UserService(BaseService):
         if not self.auth_utils.verify_password(login_data.password, user['password_hash']):
             raise HTTPException(
                 status_code=401,
-                detail="Invalid email or password"
+                detail="Invalid username or password"
             )
         
         # Create access token
         access_token = self.auth_utils.create_access_token(
-            data={"sub": user['email']}
+            data={"sub": user['username'], "user_id": user['id']}  # Include user_id in token
         )
         
         # Remove password hash from user data
@@ -89,14 +89,14 @@ class UserService(BaseService):
                 detail="Invalid authentication token"
             )
         
-        email = payload.get("sub")
-        if not email:
+        username = payload.get("sub")  # Changed from email to username
+        if not username:
             raise HTTPException(
                 status_code=401,
                 detail="Invalid authentication token"
             )
         
-        user = self.user_repo.find_by_email(email)
+        user = self.user_repo.find_by_username(username)  # Changed from email to username
         if not user:
             raise HTTPException(
                 status_code=401,

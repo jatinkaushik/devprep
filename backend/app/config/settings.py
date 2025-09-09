@@ -30,7 +30,7 @@ class AppConfig:
             self.database = DatabaseConfig()
         
         if self.cors_origins is None:
-            self.cors_origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
+            self.cors_origins = ["http://localhost:3000", "http://127.0.0.1:3000","http://localhost:3001", "http://127.0.0.1:3001"]
 
 
 # Global configuration instance
