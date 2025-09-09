@@ -10,7 +10,6 @@ import { RegisterPage } from './pages/RegisterPage';
 import { TestPage } from './pages/TestPage';
 import { LandingPage } from './pages/LandingPage';
 import { UserQuestionsPage } from './pages/UserQuestionsPage';
-import { CreateQuestionPage } from './pages/CreateQuestionPage';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
 import { Navbar } from './components/Navbar';
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -48,22 +47,6 @@ const AppContent: React.FC = () => {
             element={
               <ProtectedRoute>
                 <UserQuestionsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/questions/create"
-            element={
-              <ProtectedRoute>
-                <CreateQuestionPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/questions/edit/:id"
-            element={
-              <ProtectedRoute>
-                <CreateQuestionPage />
               </ProtectedRoute>
             }
           />

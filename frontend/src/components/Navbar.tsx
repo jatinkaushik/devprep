@@ -61,12 +61,6 @@ export const Navbar: React.FC = () => {
                 >
                   My Questions
                 </Link>
-                <Link
-                  to="/questions/create"
-                  className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                >
-                  Add Question
-                </Link>
                 {user?.role === 'admin' && (
                   <Link
                     to="/admin"
@@ -159,14 +153,6 @@ export const Navbar: React.FC = () => {
                   className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   My Questions
-                </Link>
-                
-                <Link
-                  to="/questions/create"
-                  onClick={closeMobileMenu}
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                >
-                  Add Question
                 </Link>
                 
                 {user?.role === 'admin' && (

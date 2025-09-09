@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+// No router imports needed
 import { RootState } from '../store';
 import { UserQuestion, UserQuestionListResponse } from '../types';
-import { Plus, Heart, MessageSquare, Users, Calendar, Edit, Trash2, Eye, Lock, CheckCircle, XCircle, Link as LinkIcon } from 'lucide-react';
+import { Heart, MessageSquare, Users, Calendar, Trash2, Eye, Lock, CheckCircle, XCircle, Link as LinkIcon } from 'lucide-react';
 
 export const UserQuestionsPage: React.FC = () => {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -137,13 +137,6 @@ export const UserQuestionsPage: React.FC = () => {
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">User Questions</h1>
               <p className="text-gray-600 dark:text-gray-400">Create and manage your own questions</p>
             </div>
-            <Link
-              to="/questions/create"
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 transition-colors"
-            >
-              <Plus size={16} className="mr-2" />
-              Create Question
-            </Link>
           </div>
         </div>
       </div>
@@ -206,15 +199,6 @@ export const UserQuestionsPage: React.FC = () => {
                   ? 'Start creating your own questions to build your collection.'
                   : 'Try adjusting your filters or check back later.'}
               </p>
-              {filter === 'private' && (
-                <Link
-                  to="/questions/create"
-                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 transition-colors"
-                >
-                  <Plus size={16} className="mr-2" />
-                  Create Your First Question
-                </Link>
-              )}
             </div>
           ) : (
             <div className="space-y-4">
@@ -311,13 +295,6 @@ export const UserQuestionsPage: React.FC = () => {
                       
                       {question.created_by === user?.id && (
                         <>
-                          <Link
-                            to={`/questions/edit/${question.id}`}
-                            state={{ from: '/questions/user' }}
-                            className="p-2 text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-full transition-colors"
-                          >
-                            <Edit size={16} />
-                          </Link>
                           <button
                             onClick={() => deleteQuestion(question.id)}
                             className="p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 rounded-full transition-colors"

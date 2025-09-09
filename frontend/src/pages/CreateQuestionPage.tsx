@@ -1,17 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import { Plus, X, Link as LinkIcon, Save, ArrowLeft } from 'lucide-react';
-
-interface Company {
-  id: number;
-  name: string;
-}
-
-interface CompanyAssociation {
-  company_id: number;
-  time_period: string;
-  frequency: number;
-}
+import { X, Link as LinkIcon, Save, ArrowLeft } from 'lucide-react';
 
 export const CreateQuestionPage: React.FC = () => {
   const navigate = useNavigate();
@@ -23,24 +12,15 @@ export const CreateQuestionPage: React.FC = () => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    difficulty: 'Medium',
+    difficulty: 'EASY',
     link: '',
+    acceptance_rate: '',
     is_public: false
   });
   
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [availableTopics, setAvailableTopics] = useState<string[]>([]);
-  const [availableCompanies, setAvailableCompanies] = useState<Company[]>([]);
-  const [availableTimePeriods, setAvailableTimePeriods] = useState<string[]>([]);
   const [availableDifficulties, setAvailableDifficulties] = useState<string[]>([]);
-  
-  const [companyAssociations, setCompanyAssociations] = useState<CompanyAssociation[]>([]);
-  const [showAddCompany, setShowAddCompany] = useState(false);
-  const [newCompanyAssociation, setNewCompanyAssociation] = useState<CompanyAssociation>({
-    company_id: 0,
-    time_period: '',
-    frequency: 1.0
-  });
   
   const [isLoading, setIsLoading] = useState(false);
 
@@ -53,26 +33,14 @@ export const CreateQuestionPage: React.FC = () => {
 
   const fetchMetadata = async () => {
     try {
-      const [topicsRes, companiesRes, timePeriodsRes, difficultiesRes] = await Promise.all([
+      const [topicsRes, difficultiesRes] = await Promise.all([
         fetch('http://localhost:8000/api/questions/meta/topics'),
-        fetch('http://localhost:8000/api/questions/meta/companies'),
-        fetch('http://localhost:8000/api/questions/meta/time-periods'),
         fetch('http://localhost:8000/api/questions/meta/difficulties')
       ]);
 
       if (topicsRes.ok) {
         const topics = await topicsRes.json();
         setAvailableTopics(topics);
-      }
-
-      if (companiesRes.ok) {
-        const companies = await companiesRes.json();
-        setAvailableCompanies(companies);
-      }
-
-      if (timePeriodsRes.ok) {
-        const timePeriods = await timePeriodsRes.json();
-        setAvailableTimePeriods(timePeriods);
       }
 
       if (difficultiesRes.ok) {
@@ -100,19 +68,10 @@ export const CreateQuestionPage: React.FC = () => {
           description: question.description || '',
           difficulty: question.difficulty,
           link: question.link || '',
+          acceptance_rate: question.acceptance_rate?.toString() || '',
           is_public: question.is_public
         });
         setSelectedTopics(question.topics || []);
-        
-        // Load existing company associations
-        if (question.companies && question.companies.length > 0) {
-          const existingAssociations: CompanyAssociation[] = question.companies.map((company: any) => ({
-            company_id: company.company_id,
-            time_period: company.time_period,
-            frequency: company.frequency
-          }));
-          setCompanyAssociations(existingAssociations);
-        }
       }
     } catch (error) {
       console.error('Error fetching existing question:', error);
@@ -129,18 +88,6 @@ export const CreateQuestionPage: React.FC = () => {
     setSelectedTopics(selectedTopics.filter(t => t !== topic));
   };
 
-  const addCompanyAssociation = () => {
-    if (newCompanyAssociation.company_id && newCompanyAssociation.time_period) {
-      setCompanyAssociations([...companyAssociations, { ...newCompanyAssociation }]);
-      setNewCompanyAssociation({ company_id: 0, time_period: '', frequency: 1.0 });
-      setShowAddCompany(false);
-    }
-  };
-
-  const removeCompanyAssociation = (index: number) => {
-    setCompanyAssociations(companyAssociations.filter((_, i) => i !== index));
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -152,43 +99,36 @@ export const CreateQuestionPage: React.FC = () => {
     setIsLoading(true);
     
     try {
-      const questionData = {
-        ...formData,
-        topics: selectedTopics,
-        companies: companyAssociations
-      };
-
-      let response;
-      if (isEditMode && id) {
-        response = await fetch(`http://localhost:8000/api/questions/${id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          },
-          body: JSON.stringify(questionData)
-        });
-      } else {
-        response = await fetch('http://localhost:8000/api/questions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          },
-          body: JSON.stringify(questionData)
-        });
+      // Create FormData object for multipart/form-data submission
+      const formDataToSend = new FormData();
+      formDataToSend.append('title', formData.title);
+      formDataToSend.append('difficulty', formData.difficulty.toUpperCase());
+      formDataToSend.append('link', formData.link || '');
+      formDataToSend.append('topics', selectedTopics.join(', '));
+      formDataToSend.append('description', formData.description || '');
+      formDataToSend.append('solution', ''); // Empty for now
+      if (formData.acceptance_rate) {
+        formDataToSend.append('acceptance_rate', formData.acceptance_rate.toString());
       }
 
+      const response = await fetch('http://localhost:8000/api/questions', {
+        method: 'POST',
+        body: formDataToSend
+        // Note: No Authorization header needed for now since we're using user_id=1
+      });
+
       if (!response.ok) {
-        throw new Error(`Failed to ${isEditMode ? 'update' : 'create'} question`);
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to create question');
       }
 
       const result = await response.json();
-      alert(result.message || `Question ${isEditMode ? 'updated' : 'created'} successfully!`);
-      navigate('/questions/user');
+      alert(result.message || 'Question created successfully!');
+      navigate('/questions');
     } catch (error) {
-      console.error('Error saving question:', error);
-      alert('Failed to save question. Please try again.');
+      console.error('Error creating question:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert(`Failed to create question: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
@@ -298,6 +238,23 @@ export const CreateQuestionPage: React.FC = () => {
                 </select>
               </div>
 
+              {/* Acceptance Rate */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Acceptance Rate (%)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  step="0.1"
+                  value={formData.acceptance_rate}
+                  onChange={(e) => setFormData({ ...formData, acceptance_rate: e.target.value })}
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent"
+                  placeholder="e.g., 50.5"
+                />
+              </div>
+
               {/* Topics */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -348,145 +305,11 @@ export const CreateQuestionPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Company Associations */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Company Associations</h2>
-              <button
-                type="button"
-                onClick={() => setShowAddCompany(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-              >
-                <Plus size={16} />
-                Add Company
-              </button>
-            </div>
-
-            {/* Add Company Form */}
-            {showAddCompany && (
-              <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <select
-                    value={newCompanyAssociation.company_id}
-                    onChange={(e) => setNewCompanyAssociation({ 
-                      ...newCompanyAssociation, 
-                      company_id: parseInt(e.target.value) 
-                    })}
-                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                    required
-                  >
-                    <option value={0}>Select Company</option>
-                    {availableCompanies.map((company) => (
-                      <option key={company.id} value={company.id}>
-                        {company.name}
-                      </option>
-                    ))}
-                  </select>
-                  <select
-                    value={newCompanyAssociation.time_period}
-                    onChange={(e) => setNewCompanyAssociation({ 
-                      ...newCompanyAssociation, 
-                      time_period: e.target.value 
-                    })}
-                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                    required
-                  >
-                    <option value="">Select Time Period</option>
-                    {availableTimePeriods.map((period) => (
-                      <option key={period} value={period}>
-                        {period}
-                      </option>
-                    ))}
-                  </select>
-                  <input
-                    type="number"
-                    min="0.1"
-                    max="10"
-                    step="0.1"
-                    value={newCompanyAssociation.frequency}
-                    onChange={(e) => setNewCompanyAssociation({ 
-                      ...newCompanyAssociation, 
-                      frequency: parseFloat(e.target.value) 
-                    })}
-                    placeholder="Frequency"
-                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  />
-                </div>
-                <div className="flex gap-2 mt-4">
-                  <button
-                    type="button"
-                    onClick={addCompanyAssociation}
-                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-                  >
-                    Add
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowAddCompany(false)}
-                    className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Company Associations List */}
-            {companyAssociations.length > 0 && (
-              <div className="space-y-3">
-                {companyAssociations.map((association, index) => {
-                  const company = availableCompanies.find(c => c.id === association.company_id);
-                  return (
-                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                      <div>
-                        <span className="font-medium text-gray-900 dark:text-white">
-                          {company?.name || 'Unknown Company'}
-                        </span>
-                        <span className="text-gray-500 dark:text-gray-400 ml-2">
-                          • {association.time_period} • Frequency: {association.frequency}
-                        </span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => removeCompanyAssociation(index)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-
-          {/* Submission Options */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Submission Options</h2>
-            
-            <div className="space-y-4">
-              <label className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  checked={formData.is_public}
-                  onChange={(e) => setFormData({ ...formData, is_public: e.target.checked })}
-                  className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                />
-                <div>
-                  <span className="font-medium text-gray-900 dark:text-white">Request Public Approval</span>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
-                    Submit this question for admin review to make it visible to all users
-                  </p>
-                </div>
-              </label>
-            </div>
-          </div>
-
           {/* Submit Button */}
           <div className="flex justify-end gap-4">
             <button
               type="button"
-              onClick={() => navigate('/questions/user')}
+              onClick={() => navigate('/questions')}
               className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               Cancel
@@ -499,12 +322,12 @@ export const CreateQuestionPage: React.FC = () => {
               {isLoading ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                  {isEditMode ? 'Updating...' : 'Creating...'}
+                  Creating...
                 </>
               ) : (
                 <>
                   <Save size={16} />
-                  {isEditMode ? 'Update Question' : 'Create Question'}
+                  Create Question
                 </>
               )}
             </button>

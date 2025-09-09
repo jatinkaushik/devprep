@@ -186,7 +186,7 @@ class QuestionRepository(BaseRepository):
                 company_list = [x.strip() for x in filters.companies.split(',') if x.strip()]
                 if company_list:
                     placeholders = ','.join(['?' for _ in company_list])
-                    where_conditions.append(f"c.name IN ({placeholders})")
+                    where_conditions.append(f"(c.name IN ({placeholders}) OR c.name IS NULL)")
                     params.extend(company_list)
             
             # Difficulty filtering
@@ -204,7 +204,7 @@ class QuestionRepository(BaseRepository):
                 time_period_list = [x.strip() for x in filters.time_periods.split(',') if x.strip()]
                 if time_period_list:
                     placeholders = ','.join(['?' for _ in time_period_list])
-                    where_conditions.append(f"cq.time_period IN ({placeholders})")
+                    where_conditions.append(f"(cq.time_period IN ({placeholders}) OR cq.time_period IS NULL)")
                     params.extend(time_period_list)
             
             # Topic filtering
@@ -265,11 +265,11 @@ class QuestionRepository(BaseRepository):
                 q.description,
                 q.solution,
                 q.is_public,
-                MAX(cq.frequency) as max_frequency
+                COALESCE(MAX(cq.frequency), 0) as max_frequency
             FROM 
                 questions q
-                JOIN company_questions cq ON q.id = cq.question_id
-                JOIN companies c ON cq.company_id = c.id
+                LEFT JOIN company_questions cq ON q.id = cq.question_id
+                LEFT JOIN companies c ON cq.company_id = c.id
             WHERE {where_clause}
             GROUP BY q.id
             {having_clause}
